@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.orinaryaga.online_students_club_hub.models.Challenge;
 import com.orinaryaga.online_students_club_hub.models.Event;
 import com.orinaryaga.online_students_club_hub.repositories.ChallengeRepository;
-import com.orinaryaga.online_students_club_hub.repositories.ClubRepository;
 import com.orinaryaga.online_students_club_hub.repositories.EventRepository;
 
 @Service

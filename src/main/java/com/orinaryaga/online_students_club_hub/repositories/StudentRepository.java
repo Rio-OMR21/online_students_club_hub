@@ -6,6 +6,7 @@ import com.orinaryaga.online_students_club_hub.models.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByRegistrationNumber(String registrationNumber);
+    Student findByRegistrationNumber(String registrationNumber);
 }
 
 

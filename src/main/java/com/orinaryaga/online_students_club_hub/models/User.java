@@ -24,10 +24,7 @@ public class User {
     private String gender;
     private String email;
     private String password;
-    // private String profilePhoto;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Profile profile;
+    private String profilePhoto;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Student student;
@@ -37,13 +34,12 @@ public class User {
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Membership> memberships;
-    // Getters and setters
-
+    
 
     public User() {
     }
 
-    public User(Long userId, String userName, String firstName, String secondName, String lastName, String gender, String email, String password, Profile profile, Student student, Mentor mentor, Set<Membership> memberships) {
+    public User(Long userId, String userName, String firstName, String secondName, String lastName, String gender, String email, String password, String profilePhoto, Student student, Mentor mentor, Set<Membership> memberships) {
         this.userId = userId;
         this.userName = userName;
         this.firstName = firstName;
@@ -52,7 +48,7 @@ public class User {
         this.gender = gender;
         this.email = email;
         this.password = password;
-        this.profile = profile;
+        this.profilePhoto = profilePhoto;
         this.student = student;
         this.mentor = mentor;
         this.memberships = memberships;
@@ -122,12 +118,12 @@ public class User {
         this.password = password;
     }
 
-    public Profile getProfile() {
-        return this.profile;
+    public String getProfilePhoto() {
+        return this.profilePhoto;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 
     public Student getStudent() {
@@ -194,8 +190,8 @@ public class User {
         return this;
     }
 
-    public User profile(Profile profile) {
-        setProfile(profile);
+    public User profilePhoto(String profilePhoto) {
+        setProfilePhoto(profilePhoto);
         return this;
     }
 
@@ -222,12 +218,12 @@ public class User {
             return false;
         }
         User user = (User) o;
-        return Objects.equals(userId, user.userId) && Objects.equals(userName, user.userName) && Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && Objects.equals(lastName, user.lastName) && Objects.equals(gender, user.gender) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profile, user.profile) && Objects.equals(student, user.student) && Objects.equals(mentor, user.mentor) && Objects.equals(memberships, user.memberships);
+        return Objects.equals(userId, user.userId) && Objects.equals(userName, user.userName) && Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && Objects.equals(lastName, user.lastName) && Objects.equals(gender, user.gender) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profilePhoto, user.profilePhoto) && Objects.equals(student, user.student) && Objects.equals(mentor, user.mentor) && Objects.equals(memberships, user.memberships);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userName, firstName, secondName, lastName, gender, email, password, profile, student, mentor, memberships);
+        return Objects.hash(userId, userName, firstName, secondName, lastName, gender, email, password, profilePhoto, student, mentor, memberships);
     }
 
     @Override
@@ -241,12 +237,15 @@ public class User {
             ", gender='" + getGender() + "'" +
             ", email='" + getEmail() + "'" +
             ", password='" + getPassword() + "'" +
-            ", profile='" + getProfile() + "'" +
+            ", profilePhoto='" + getProfilePhoto() + "'" +
             ", student='" + getStudent() + "'" +
             ", mentor='" + getMentor() + "'" +
             ", memberships='" + getMemberships() + "'" +
             "}";
     }
+
+
+
 
     
 }

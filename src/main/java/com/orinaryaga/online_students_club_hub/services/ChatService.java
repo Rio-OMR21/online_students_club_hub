@@ -32,7 +32,7 @@ public class ChatService {
         Club club = clubService.getClubById(clubId)
                 .orElseThrow(() -> new RuntimeException("Club not found"));
 
-        User user = userService.getUserById(userId)
+        User user = userService.findUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         membershipService.findByUserAndClub(userId, clubId)
@@ -60,7 +60,7 @@ public class ChatService {
         Club club = clubService.getClubById(clubId)
                 .orElseThrow(() -> new RuntimeException("Club not found"));
 
-        User user = userService.getUserById(userId)
+        User user = userService.findUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return chatRepository.findByClubAndUserOrderBySentTimeAsc(club, user);

@@ -1,19 +1,18 @@
 package com.orinaryaga.online_students_club_hub.controllers;
 
+import com.orinaryaga.online_students_club_hub.models.Student;
+import com.orinaryaga.online_students_club_hub.models.User;
+import com.orinaryaga.online_students_club_hub.models.Mentor;
+import com.orinaryaga.online_students_club_hub.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.orinaryaga.online_students_club_hub.models.User;
-import com.orinaryaga.online_students_club_hub.services.UserService;
-
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -21,88 +20,139 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Register a new user
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User createdUser = userService.registerUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    // Register Student
+    @PostMapping("/register/student")
+    public ResponseEntity<Student> registerStudent(
+        @RequestParam("userName") String userName,
+        @RequestParam("firstName") String firstName,
+        @RequestParam("secondName") String secondName,
+        @RequestParam("lastName") String lastName,
+        @RequestParam("gender") String gender,
+        @RequestParam("email") String email,
+        @RequestParam("password") String password,
+        @RequestParam("program") String program,
+        @RequestParam("registrationNumber") String registrationNumber,
+        @RequestParam("profilePhoto") MultipartFile profilePhoto
+    ) throws IOException {
+        Student registeredStudent = userService.registerStudent(userName, firstName, secondName, lastName, gender, email, password, program, registrationNumber, profilePhoto);
+        return ResponseEntity.ok(registeredStudent);
     }
 
-    // Update existing user
-    @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        User updatedUser = userService.updateUser(user);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-    }
-
-    // Upload profile photo
-    @PostMapping("/{userId}/profile-photo")
-    public ResponseEntity<String> uploadProfilePhoto(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
-        try {
-            String response = userService.uploadProfilePhoto(userId, file);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    // Update Student
+    @PutMapping("/student/{userId}")
+    public ResponseEntity<Void> updateStudent(
+        @PathVariable Long userId,
+        @RequestParam("program") String program,
+        @RequestParam("registrationNumber") String registrationNumber,
+        @RequestParam("profilePhoto") MultipartFile profilePhoto
+    ) throws IOException {
+        Optional<User> userOptional = userService.findUserById(userId);
+        if (userOptional.isPresent() && userOptional.get().getStudent() != null) {
+            Student student = userOptional.get().getStudent();
+            student.setProgram(program);
+            student.setRegistrationNumber(registrationNumber);
+            userService.updateStudent(student, profilePhoto);
+            return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.notFound().build();
     }
 
-    // Download profile photo
-    @GetMapping("/{userId}/profile-photo")
-    public ResponseEntity<byte[]> downloadProfilePhoto(@PathVariable Long userId) {
-        try {
-            byte[] photo = userService.downloadProfilePhoto(userId);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG) // Adjust if needed
-                    .body(photo);
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    // Delete Student
+    @DeleteMapping("/student/{userId}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long userId) {
+        Optional<User> userOptional = userService.findUserById(userId);
+        if (userOptional.isPresent() && userOptional.get().getStudent() != null) {
+            userService.deleteUserById(userId);
+            return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.notFound().build();
     }
 
-    // Delete profile photo
-    @DeleteMapping("/{userId}/profile-photo")
-    public ResponseEntity<Void> deleteProfilePhoto(@PathVariable Long userId) {
-        try {
-            userService.deleteProfilePhoto(userId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    // Find Student by ID
+    @GetMapping("/student/{userId}")
+    public ResponseEntity<Student> findStudentById(@PathVariable Long userId) {
+        Optional<User> userOptional = userService.findUserById(userId);
+        if (userOptional.isPresent() && userOptional.get().getStudent() != null) {
+            return ResponseEntity.ok(userOptional.get().getStudent());
         }
+        return ResponseEntity.notFound().build();
     }
 
-    // Authenticate user
-    @PostMapping("/authenticate")
-    public ResponseEntity<User> authenticateUser(@RequestParam String email, @RequestParam String password) {
-        User user = userService.authenticateUser(email, password);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    // Find Student by Registration Number
+    @GetMapping("/student/registration-number/{registrationNumber}")
+    public ResponseEntity<Student> findStudentByRegistrationNumber(@PathVariable String registrationNumber) {
+        Optional<User> userOptional = userService.findUserByRegistrationNumber(registrationNumber);
+        if (userOptional.isPresent() && userOptional.get().getStudent() != null) {
+            return ResponseEntity.ok(userOptional.get().getStudent());
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    // Change user password
-    @PostMapping("/{userId}/change-password")
-    public ResponseEntity<Void> changePassword(@PathVariable Long userId, @RequestParam String newPassword) {
-        userService.changePassword(userId, newPassword);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    // Register Mentor
+    @PostMapping("/register/mentor")
+    public ResponseEntity<Mentor> registerMentor(
+        @RequestParam("userName") String userName,
+        @RequestParam("firstName") String firstName,
+        @RequestParam("secondName") String secondName,
+        @RequestParam("lastName") String lastName,
+        @RequestParam("gender") String gender,
+        @RequestParam("email") String email,
+        @RequestParam("password") String password,
+        @RequestParam("department") String department,
+        @RequestParam("employeeNumber") String employeeNumber,
+        @RequestParam("profilePhoto") MultipartFile profilePhoto
+    ) throws IOException {
+        Mentor registeredMentor = userService.registerMentor(userName, firstName, secondName, lastName, gender, email, password, department, employeeNumber, profilePhoto);
+        return ResponseEntity.ok(registeredMentor);
     }
 
-    // Get user by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    // Update Mentor
+    @PutMapping("/mentor/{userId}")
+    public ResponseEntity<Void> updateMentor(
+        @PathVariable Long userId,
+        @RequestParam("department") String department,
+        @RequestParam("employeeNumber") String employeeNumber,
+        @RequestParam("profilePhoto") MultipartFile profilePhoto
+    ) throws IOException {
+        Optional<User> userOptional = userService.findUserById(userId);
+        if (userOptional.isPresent() && userOptional.get().getMentor() != null) {
+            Mentor mentor = userOptional.get().getMentor();
+            mentor.setDepartment(department);
+            mentor.setEmployeeNumber(employeeNumber);
+            userService.updateMentor(mentor, profilePhoto);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    // Get all users
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    // Delete Mentor
+    @DeleteMapping("/mentor/{userId}")
+    public ResponseEntity<Void> deleteMentor(@PathVariable Long userId) {
+        Optional<User> userOptional = userService.findUserById(userId);
+        if (userOptional.isPresent() && userOptional.get().getMentor() != null) {
+            userService.deleteUserById(userId);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    // Update user email
-    @PutMapping("/{userId}/email")
-    public ResponseEntity<User> updateUserEmail(@PathVariable Long userId, @RequestParam String newEmail) {
-        User updatedUser = userService.updateUserEmail(userId, newEmail);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    // Find Mentor by ID
+    @GetMapping("/mentor/{userId}")
+    public ResponseEntity<Mentor> findMentorById(@PathVariable Long userId) {
+        Optional<User> userOptional = userService.findUserById(userId);
+        if (userOptional.isPresent() && userOptional.get().getMentor() != null) {
+            return ResponseEntity.ok(userOptional.get().getMentor());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Find Mentor by Employee Number
+    @GetMapping("/mentor/employee-number/{employeeNumber}")
+    public ResponseEntity<Mentor> findMentorByEmployeeNumber(@PathVariable String employeeNumber) {
+        Optional<User> userOptional = userService.findUserByEmployeeNumber(employeeNumber);
+        if (userOptional.isPresent() && userOptional.get().getMentor() != null) {
+            return ResponseEntity.ok(userOptional.get().getMentor());
+        }
+        return ResponseEntity.notFound().build();
     }
 }

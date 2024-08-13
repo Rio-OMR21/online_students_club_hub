@@ -40,7 +40,7 @@ public class EventService {
         Club club = clubService.getClubById(event.getClub().getClubId())
                 .orElseThrow(() -> new RuntimeException("Club not found"));
 
-        User user = userService.getUserById(event.getUser().getUserId())
+        User user = userService.findUserById(event.getUser().getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         event.setClub(club);
