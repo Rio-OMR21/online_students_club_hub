@@ -32,7 +32,7 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private final String imagePath = "A:/online_students_club_hub/src/main/resources/image_db/";
+    private final String imagePath = "C:/Users/omr/Documents/GitHub/online_students_club_hub/src/main/resources/image_db/";
 
     public Optional<User> findUserById(Long userId) {
         return userRepository.findById(userId);
