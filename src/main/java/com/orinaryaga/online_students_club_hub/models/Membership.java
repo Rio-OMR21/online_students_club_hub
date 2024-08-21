@@ -8,6 +8,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Membership {
     @Id
@@ -15,10 +17,12 @@ public class Membership {
     private Long membershipId;
 
     @ManyToOne
+    @JsonBackReference(value = "user-membership")
     @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne
+    @JsonBackReference(value = "club-membership")
     @JoinColumn(name = "clubId")
     private Club club;
 

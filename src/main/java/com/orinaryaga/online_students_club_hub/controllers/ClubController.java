@@ -11,15 +11,16 @@ import com.orinaryaga.online_students_club_hub.services.ClubService;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/clubs")
+@RequestMapping("/api/club")
 public class ClubController {
 
     @Autowired
     private ClubService clubService;
 
     // Register a new club
-    @PostMapping("/register")
+    @PostMapping("/create")
     public ResponseEntity<Club> registerClub(@RequestBody Club club) {
         try {
             Club createdClub = clubService.registerClub(club);
@@ -30,7 +31,7 @@ public class ClubController {
     }
 
     // Update existing club
-    @PutMapping("/{clubId}")
+    @PutMapping("/update/{clubId}")
     public ResponseEntity<Club> updateClub(@PathVariable Long clubId, @RequestBody Club club) {
         club.setClubId(clubId); // Ensure correct club ID is set
         try {
@@ -50,14 +51,14 @@ public class ClubController {
     }
 
     // Get all clubs
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Club>> getAllClubs() {
         List<Club> clubs = clubService.getAllClubs();
         return new ResponseEntity<>(clubs, HttpStatus.OK);
     }
 
     // Delete club by ID
-    @DeleteMapping("/{clubId}")
+    @DeleteMapping("/delete/{clubId}")
     public ResponseEntity<Void> deleteClub(@PathVariable Long clubId) {
         try {
             clubService.deleteClub(clubId);
@@ -67,27 +68,6 @@ public class ClubController {
         }
     }
 
-    // Add a member to a club
-    @PostMapping("/{clubId}/addMember/{userId}")
-    public ResponseEntity<Club> addMemberToClub(@PathVariable Long clubId, @PathVariable Long userId) {
-        try {
-            Club updatedClub = clubService.addMemberToClub(clubId, userId);
-            return new ResponseEntity<>(updatedClub, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    // Remove a member from a club
-    @DeleteMapping("/{clubId}/removeMember/{userId}")
-    public ResponseEntity<Club> removeMemberFromClub(@PathVariable Long clubId, @PathVariable Long userId) {
-        try {
-            Club updatedClub = clubService.removeMemberFromClub(clubId, userId);
-            return new ResponseEntity<>(updatedClub, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 
     // Add a chat to a club
     @PostMapping("/{clubId}/addChat")
@@ -100,14 +80,5 @@ public class ClubController {
         }
     }
 
-    // // Get all chats for a club
-    // @GetMapping("/{clubId}/chats")
-    // public ResponseEntity<List<Chat>> getChatsForClub(@PathVariable Long clubId) {
-    //     try {
-    //         List<Chat> chats = clubService.getChatsForClub(clubId);
-    //         return new ResponseEntity<>(chats, HttpStatus.OK);
-    //     } catch (RuntimeException e) {
-    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //     }
-    // }
+   
 }

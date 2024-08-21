@@ -8,7 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -27,19 +30,22 @@ public class User {
     private String profilePhoto;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Student student;
+    @JsonManagedReference(value = "user-mentor")
+    private Mentor mentor;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Mentor mentor;
-    
+    @JsonManagedReference(value = "user-student")
+    private Student student;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Membership> memberships;
+    @JsonManagedReference(value = "user-membership")
+    private List<Membership> memberships = new ArrayList<>();
     
 
     public User() {
     }
 
-    public User(Long userId, String userName, String firstName, String secondName, String lastName, String gender, String email, String password, String profilePhoto, Student student, Mentor mentor, Set<Membership> memberships) {
+    public User(Long userId, String userName, String firstName, String secondName, String lastName, String gender, String email, String password, String profilePhoto, Mentor mentor, Student student, List<Membership> memberships) {
         this.userId = userId;
         this.userName = userName;
         this.firstName = firstName;
@@ -49,8 +55,8 @@ public class User {
         this.email = email;
         this.password = password;
         this.profilePhoto = profilePhoto;
-        this.student = student;
         this.mentor = mentor;
+        this.student = student;
         this.memberships = memberships;
     }
 
@@ -126,14 +132,6 @@ public class User {
         this.profilePhoto = profilePhoto;
     }
 
-    public Student getStudent() {
-        return this.student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
     public Mentor getMentor() {
         return this.mentor;
     }
@@ -142,11 +140,19 @@ public class User {
         this.mentor = mentor;
     }
 
-    public Set<Membership> getMemberships() {
+    public Student getStudent() {
+        return this.student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public List<Membership> getMemberships() {
         return this.memberships;
     }
 
-    public void setMemberships(Set<Membership> memberships) {
+    public void setMemberships(List<Membership> memberships) {
         this.memberships = memberships;
     }
 
@@ -195,17 +201,17 @@ public class User {
         return this;
     }
 
-    public User student(Student student) {
-        setStudent(student);
-        return this;
-    }
-
     public User mentor(Mentor mentor) {
         setMentor(mentor);
         return this;
     }
 
-    public User memberships(Set<Membership> memberships) {
+    public User student(Student student) {
+        setStudent(student);
+        return this;
+    }
+
+    public User memberships(List<Membership> memberships) {
         setMemberships(memberships);
         return this;
     }
@@ -218,12 +224,12 @@ public class User {
             return false;
         }
         User user = (User) o;
-        return Objects.equals(userId, user.userId) && Objects.equals(userName, user.userName) && Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && Objects.equals(lastName, user.lastName) && Objects.equals(gender, user.gender) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profilePhoto, user.profilePhoto) && Objects.equals(student, user.student) && Objects.equals(mentor, user.mentor) && Objects.equals(memberships, user.memberships);
+        return Objects.equals(userId, user.userId) && Objects.equals(userName, user.userName) && Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && Objects.equals(lastName, user.lastName) && Objects.equals(gender, user.gender) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profilePhoto, user.profilePhoto) && Objects.equals(mentor, user.mentor) && Objects.equals(student, user.student) && Objects.equals(memberships, user.memberships);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userName, firstName, secondName, lastName, gender, email, password, profilePhoto, student, mentor, memberships);
+        return Objects.hash(userId, userName, firstName, secondName, lastName, gender, email, password, profilePhoto, mentor, student, memberships);
     }
 
     @Override
@@ -238,11 +244,12 @@ public class User {
             ", email='" + getEmail() + "'" +
             ", password='" + getPassword() + "'" +
             ", profilePhoto='" + getProfilePhoto() + "'" +
-            ", student='" + getStudent() + "'" +
             ", mentor='" + getMentor() + "'" +
+            ", student='" + getStudent() + "'" +
             ", memberships='" + getMemberships() + "'" +
             "}";
     }
+
 
 
 

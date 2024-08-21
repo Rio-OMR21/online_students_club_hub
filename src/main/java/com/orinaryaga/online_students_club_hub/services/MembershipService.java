@@ -25,8 +25,8 @@ public class MembershipService {
     @Autowired
     private ClubRepository clubRepository;
 
-    // Add a member to a club
-    public Membership addMemberToClub(Long clubId, Long userId) {
+    // Add a member (student or mentor) to a club
+    public Membership addMemberToClub(Long clubId, Long userId, boolean isMentor) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new RuntimeException("Club not found"));
 
@@ -36,6 +36,17 @@ public class MembershipService {
         // Check if the user is already a member of the club
         if (membershipRepository.existsByUserAndClub(user, club)) {
             throw new RuntimeException("User is already a member of the club");
+        }
+
+        // Validate user type (student or mentor) based on isMentor flag
+        if (isMentor) {
+            if (user.getMentor() == null) {
+                throw new RuntimeException("User is not a mentor");
+            }
+        } else {
+            if (user.getStudent() == null) {
+                throw new RuntimeException("User is not a student");
+            }
         }
 
         // Create a new Membership
@@ -52,7 +63,6 @@ public class MembershipService {
 
         return membership;
     }
-
 
     // Get all memberships for a club
     public List<Membership> getAllMembershipsForClub(Long clubId) {
@@ -96,7 +106,4 @@ public class MembershipService {
 
         return membershipRepository.findByUserAndClub(user, club);
     }
-    
-    
 }
-

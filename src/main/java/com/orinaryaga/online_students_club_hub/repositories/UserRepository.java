@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    List<User> findAll();
+
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
@@ -35,6 +37,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.mentor.employeeNumber = ?1")
     Optional<User> findByEmployeeNumber(String employeeNumber);
+
+    /////////////////////////////////////////////
+    List<User> findByUserNameContaining(String userName);
+
+    List<User> findByEmailContaining(String email);
+
+    List<User> findByFirstNameContaining(String firstName);
+
+    List<User> findByLastNameContaining(String lastName);
 
    
 }

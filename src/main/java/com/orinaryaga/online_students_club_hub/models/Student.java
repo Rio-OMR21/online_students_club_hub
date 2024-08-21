@@ -7,6 +7,8 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Student {
     @Id
@@ -17,7 +19,8 @@ public class Student {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
+    @JoinColumn(name = "userId")
+    @JsonBackReference(value = "user-student")
     private User user;
 
     // Getters and setters

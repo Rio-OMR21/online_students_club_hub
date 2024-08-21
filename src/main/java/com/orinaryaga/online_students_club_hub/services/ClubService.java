@@ -8,12 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.orinaryaga.online_students_club_hub.models.Chat;
 import com.orinaryaga.online_students_club_hub.models.Club;
-import com.orinaryaga.online_students_club_hub.models.Membership;
-import com.orinaryaga.online_students_club_hub.models.User;
 import com.orinaryaga.online_students_club_hub.repositories.ChatRepository;
 import com.orinaryaga.online_students_club_hub.repositories.ClubRepository;
-import com.orinaryaga.online_students_club_hub.repositories.MembershipRepository;
-import com.orinaryaga.online_students_club_hub.repositories.UserRepository;
 
 @Service
 public class ClubService {
@@ -24,11 +20,6 @@ public class ClubService {
     @Autowired
     private ChatRepository chatRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MembershipRepository membershipRepository;
 
     // Register a new club
     public Club registerClub(Club club) {
@@ -71,41 +62,6 @@ public class ClubService {
         clubRepository.deleteById(clubId);
     }
 
-    // Add a member to a club
-   // Add a member to a club
-    // Add a member to a club
-    public Club addMemberToClub(Long clubId, Long userId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new RuntimeException("Club not found"));
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Create a new Membership
-        Membership membership = new Membership();
-        membership.setUser(user);
-        membership.setClub(club);
-
-        // Save the membership
-        membershipRepository.save(membership);
-
-        // Add membership to the club's memberships
-        club.getMemberships().add(membership);
-        return clubRepository.save(club);
-    }
-
-    // Remove a member from a club
-    @SuppressWarnings("unlikely-arg-type")
-    public Club removeMemberFromClub(Long clubId, Long userId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new RuntimeException("Club not found"));
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        club.getMemberships().remove(user);
-        return clubRepository.save(club);
-    }
 
     // Add a chat to a club
     public Chat addChatToClub(Long clubId, Chat chat) {

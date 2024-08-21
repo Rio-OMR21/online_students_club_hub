@@ -11,6 +11,7 @@ import com.orinaryaga.online_students_club_hub.services.MembershipService;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/memberships")
 public class MembershipController {
@@ -18,11 +19,11 @@ public class MembershipController {
     @Autowired
     private MembershipService membershipService;
 
-    // Add a member to a club
+    // Add a member (student or mentor) to a club
     @PostMapping("/add")
-    public ResponseEntity<Membership> addMemberToClub(@RequestParam Long clubId, @RequestParam Long userId) {
+    public ResponseEntity<Membership> addMemberToClub(@RequestParam Long clubId, @RequestParam Long userId, @RequestParam boolean isMentor) {
         try {
-            Membership membership = membershipService.addMemberToClub(clubId, userId);
+            Membership membership = membershipService.addMemberToClub(clubId, userId, isMentor);
             return new ResponseEntity<>(membership, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -78,4 +79,3 @@ public class MembershipController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
-

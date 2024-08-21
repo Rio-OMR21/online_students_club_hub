@@ -8,7 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,15 +31,16 @@ public class Club {
 
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
-    private Set<Membership> memberships = new HashSet<>();
-
+    @JsonManagedReference(value = "club-membership")
+    private List<Membership> memberships = new ArrayList<>();
     // Getters and setters
+
 
 
     public Club() {
     }
 
-    public Club(Long clubId, String clubName, String description, String category, Set<Chat> chat, Set<Membership> memberships) {
+    public Club(Long clubId, String clubName, String description, String category, Set<Chat> chat, List<Membership> memberships) {
         this.clubId = clubId;
         this.clubName = clubName;
         this.description = description;
@@ -83,11 +89,11 @@ public class Club {
         this.chat = chat;
     }
 
-    public Set<Membership> getMemberships() {
+    public List<Membership> getMemberships() {
         return this.memberships;
     }
 
-    public void setMemberships(Set<Membership> memberships) {
+    public void setMemberships(List<Membership> memberships) {
         this.memberships = memberships;
     }
 
@@ -116,7 +122,7 @@ public class Club {
         return this;
     }
 
-    public Club memberships(Set<Membership> memberships) {
+    public Club memberships(List<Membership> memberships) {
         setMemberships(memberships);
         return this;
     }
